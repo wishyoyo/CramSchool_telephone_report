@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>電訪追蹤記錄</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📞 電訪追蹤記錄系統</h1>
+        <div class="date-display" id="dateDisplay"></div>
+
+        <div class="input-section" style="margin-bottom: 20px;">
+            <label style="display: block; color: #333; margin-bottom: 8px; font-weight: bold;">👤 招生人員姓名</label>
+            <input type="text" id="staffName" placeholder="請輸入您的姓名" style="width: 100%;">
+        </div>
+
+        <div class="counter-section">
+            <div class="counter-item">
+                <span class="counter-label">有效電話</span>
+                <div class="counter-controls">
+                    <button class="btn btn-minus" onclick="decreaseCount('valid')">−</button>
+                    <span class="counter-value" id="validCount">0</span>
+                    <button class="btn btn-add" onclick="increaseCount('valid')">+</button>
+                </div>
+            </div>
+
+            <div class="counter-item">
+                <span class="counter-label">未接電話</span>
+                <div class="counter-controls">
+                    <button class="btn btn-minus" onclick="decreaseCount('unanswered')">−</button>
+                    <span class="counter-value" id="unansweredCount">0</span>
+                    <button class="btn btn-add" onclick="increaseCount('unanswered')">+</button>
+                </div>
+            </div>
+
+            <div class="counter-item">
+                <span class="counter-label">無效電話</span>
+                <div class="counter-controls">
+                    <button class="btn btn-minus" onclick="decreaseCount('invalid')">−</button>
+                    <span class="counter-value" id="invalidCount">0</span>
+                    <button class="btn btn-add" onclick="increaseCount('invalid')">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="total-section">
+            總通數：<span id="totalCount">0</span> 通
+        </div>
+
+        <div class="input-section">
+            <h3>📝 電訪追蹤報表（學生姓名）</h3>
+            <div class="student-input-container">
+                <input type="text" id="studentName" placeholder="輸入學生姓名">
+                <button class="btn-primary" onclick="addStudent()">新增</button>
+            </div>
+            <div class="student-list" id="studentList"></div>
+        </div>
+
+        <div class="appointment-section">
+            <div class="appointment-item">
+                <label>預約試聽人數</label>
+                <input type="number" id="trialCount" min="0" value="0">
+            </div>
+            <div class="appointment-item">
+                <label>確定報名人數</label>
+                <input type="number" id="enrollCount" min="0" value="0">
+            </div>
+        </div>
+
+        <button class="btn-generate" onclick="generateReport()">📋 生成回報</button>
+
+        <div class="output-section" id="outputSection" style="display: none;">
+            <h3>回報內容</h3>
+            <div class="output-text" id="outputText"></div>
+            <button class="btn-copy" onclick="copyReport()">📋 複製回報</button>
+        </div>
+
+        <button class="btn-reset" onclick="resetAll()">🔄 重置所有資料</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
