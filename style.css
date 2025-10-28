@@ -352,6 +352,7 @@ input[type="text"]:focus, input[type="number"]:focus {
     input[type="text"], input[type="number"] {
         padding: 10px;
         font-size: 15px;
+        width: 100%;
     }
 
     .btn-primary {
@@ -366,6 +367,7 @@ input[type="text"]:focus, input[type="number"]:focus {
     }
 
     .appointment-section {
+        grid-template-columns: 1fr;
         gap: 10px;
     }
 
@@ -376,6 +378,10 @@ input[type="text"]:focus, input[type="number"]:focus {
     .appointment-item label {
         font-size: 13px;
         margin-bottom: 6px;
+    }
+
+    .appointment-item input {
+        width: 100%;
     }
 
     .btn-generate {
@@ -417,10 +423,15 @@ input[type="text"]:focus, input[type="number"]:focus {
     input[type="text"], input[type="number"] {
         padding: 8px;
         font-size: 14px;
+        width: 100%;
     }
 
     .btn-primary {
         padding: 8px 12px;
         font-size: 14px;
+    }
+
+    .appointment-section {
+        grid-template-columns: 1fr;
     }
 }
