@@ -135,7 +135,11 @@ h1 {
     margin-bottom: 12px;
 }
 
-.student-form input[type="text"] {
+.student-form input[type="text"]:first-child {
+    grid-column: 1 / -1;
+}
+
+.student-form #studentClass {
     grid-column: 1 / -1;
 }
 
