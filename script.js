@@ -3,10 +3,16 @@ const schoolGrades = {
     '斗六國中': ['一', '二', '三'],
     '雲林國中': ['一', '二', '三'],
     '正心中學': ['一', '二', '三'],
+    '永年中學': ['一', '二', '三'],
     '雲林國小': ['一', '二', '三', '四', '五', '六'],
     '公誠國小': ['一', '二', '三', '四', '五', '六'],
     '鎮西國小': ['一', '二', '三', '四', '五', '六'],
-    '鎮東國小': ['一', '二', '三', '四', '五', '六']
+    '鎮東國小': ['一', '二', '三', '四', '五', '六'],
+    '斗六國小': ['一', '二', '三', '四', '五', '六'],
+    '鎮南國小': ['一', '二', '三', '四', '五', '六'],
+    '斗南國小': ['一', '二', '三', '四', '五', '六'],
+    '土庫國小': ['一', '二', '三', '四', '五', '六'],
+    '維多利亞': ['一', '二', '三', '四', '五', '六']
 };
 
 // 學校簡稱對應表
@@ -14,10 +20,29 @@ const schoolShortNames = {
     '斗六國中': '斗國',
     '雲林國中': '雲國',
     '正心中學': '正心',
+    '永年中學': '永年',
     '雲林國小': '雲小',
     '公誠國小': '公誠',
     '鎮西國小': '鎮西',
-    '鎮東國小': '鎮東'
+    '鎮東國小': '鎮東',
+    '斗六國小': '斗小',
+    '鎮南國小': '鎮南',
+    '斗南國小': '斗南',
+    '土庫國小': '土庫',
+    '維多利亞': '維多'
+};
+
+// 學制分類
+const schoolsByType = {
+    '國中': ['斗六國中', '雲林國中', '正心中學', '永年中學'],
+    '國小': ['雲林國小', '公誠國小', '鎮西國小', '鎮東國小', '斗六國小', '鎮南國小', '斗南國小', '土庫國小', '維多利亞']
+};
+
+// 年級數字對應表（用於斗六國中班級編號）
+const gradeNumbers = {
+    '一': '7',
+    '二': '8',
+    '三': '9'
 };
 
 let counts = {
@@ -38,6 +63,20 @@ function loadData() {
             document.getElementById('staffName').value = data.staffName || '';
             document.getElementById('trialCount').value = data.trialCount || 0;
             document.getElementById('enrollCount').value = data.enrollCount || 0;
+            
+            // 恢復學制、學校、年級選擇
+            if (data.lastSchoolType) {
+                document.getElementById('schoolType').value = data.lastSchoolType;
+                updateSchoolOptions();
+            }
+            if (data.lastSchool) {
+                document.getElementById('studentSchool').value = data.lastSchool;
+                updateGradeOptions();
+            }
+            if (data.lastGrade) {
+                document.getElementById('studentGrade').value = data.lastGrade;
+            }
+            
             updateDisplay();
             updateStudentList();
         } catch (e) {
@@ -53,7 +92,10 @@ function saveData() {
         students: students,
         staffName: document.getElementById('staffName').value,
         trialCount: document.getElementById('trialCount').value,
-        enrollCount: document.getElementById('enrollCount').value
+        enrollCount: document.getElementById('enrollCount').value,
+        lastSchoolType: document.getElementById('schoolType').value,
+        lastSchool: document.getElementById('studentSchool').value,
+        lastGrade: document.getElementById('studentGrade').value
     };
     localStorage.setItem('callTrackingData', JSON.stringify(data));
 }
@@ -63,6 +105,26 @@ function updateDate() {
     const month = now.getMonth() + 1;
     const day = now.getDate();
     document.getElementById('dateDisplay').textContent = `${month}月${day}日`;
+}
+
+function updateSchoolOptions() {
+    const typeSelect = document.getElementById('schoolType');
+    const schoolSelect = document.getElementById('studentSchool');
+    const gradeSelect = document.getElementById('studentGrade');
+    const selectedType = typeSelect.value;
+    
+    // 清空學校和年級選項
+    schoolSelect.innerHTML = '<option value="">選擇學校</option>';
+    gradeSelect.innerHTML = '<option value="">選擇年級</option>';
+    
+    if (selectedType && schoolsByType[selectedType]) {
+        schoolsByType[selectedType].forEach(school => {
+            const option = document.createElement('option');
+            option.value = school;
+            option.textContent = school;
+            schoolSelect.appendChild(option);
+        });
+    }
 }
 
 function updateGradeOptions() {
@@ -108,28 +170,35 @@ function updateDisplay() {
 
 function addStudent() {
     const nameInput = document.getElementById('studentName');
+    const typeSelect = document.getElementById('schoolType');
     const schoolSelect = document.getElementById('studentSchool');
     const gradeSelect = document.getElementById('studentGrade');
+    const classInput = document.getElementById('studentClass');
     
     const name = nameInput.value.trim();
+    const type = typeSelect.value;
     const school = schoolSelect.value;
     const grade = gradeSelect.value;
+    const classNum = classInput.value.trim();
     
-    if (name && school && grade) {
+    if (name && type && school && grade) {
         students.push({
             name: name,
+            type: type,
             school: school,
-            grade: grade
+            grade: grade,
+            class: classNum || '' // 班級可選填
         });
         
-        // 只清空姓名，保留學校和年級選擇
+        // 只清空姓名和班級，保留學制、學校和年級選擇
         nameInput.value = '';
+        classInput.value = '';
         nameInput.focus(); // 自動聚焦到姓名欄位，方便快速輸入下一個
         
         updateStudentList();
         saveData();
     } else {
-        alert('請填寫完整的學生資訊（姓名、學校、年級）');
+        alert('請填寫完整的學生資訊（姓名、學制、學校、年級）');
     }
 }
 
@@ -146,13 +215,19 @@ function updateStudentList() {
         return;
     }
     
-    listDiv.innerHTML = students.map((student, index) => 
-        `<span class="student-tag">
-            ${student.name}
-            <span class="student-info">${student.school} ${student.grade}年級</span>
+    listDiv.innerHTML = students.map((student, index) => {
+        let displayText = `${student.name}`;
+        let infoText = `${student.school} ${student.grade}年級`;
+        if (student.class) {
+            infoText += ` ${student.class}班`;
+        }
+        
+        return `<span class="student-tag">
+            ${displayText}
+            <span class="student-info">${infoText}</span>
             <button onclick="removeStudent(${index})">×</button>
-        </span>`
-    ).join('');
+        </span>`;
+    }).join('');
 }
 
 function generateReport() {
@@ -163,11 +238,24 @@ function generateReport() {
     const month = now.getMonth() + 1;
     const day = now.getDate();
     
-    // 按學校和年級分組學生
+    // 按學校和年級（和班級）分組學生
     const groupedStudents = {};
     students.forEach(student => {
         const shortSchool = schoolShortNames[student.school] || student.school;
-        const key = `${shortSchool}${student.grade}年級`;
+        let key;
+        
+        // 斗六國中特殊處理
+        if (student.school === '斗六國中' && student.class) {
+            const gradeNum = gradeNumbers[student.grade];
+            key = `${shortSchool}${gradeNum}${student.class.padStart(2, '0')}`;
+        } else {
+            // 其他學校
+            key = `${shortSchool}${student.grade}年級`;
+            if (student.class) {
+                key += ` ${student.class}班`;
+            }
+        }
+        
         if (!groupedStudents[key]) {
             groupedStudents[key] = [];
         }
