@@ -55,20 +55,21 @@
             <div class="student-form">
                 <input type="text" id="studentName" placeholder="學生姓名">
                 
+                <select id="schoolType" onchange="updateSchoolOptions()">
+                    <option value="">選擇學制</option>
+                    <option value="國中">國中</option>
+                    <option value="國小">國小</option>
+                </select>
+                
                 <select id="studentSchool" onchange="updateGradeOptions()">
                     <option value="">選擇學校</option>
-                    <option value="斗六國中">斗六國中</option>
-                    <option value="雲林國中">雲林國中</option>
-                    <option value="正心中學">正心中學</option>
-                    <option value="雲林國小">雲林國小</option>
-                    <option value="公誠國小">公誠國小</option>
-                    <option value="鎮西國小">鎮西國小</option>
-                    <option value="鎮東國小">鎮東國小</option>
                 </select>
                 
                 <select id="studentGrade">
                     <option value="">選擇年級</option>
                 </select>
+                
+                <input type="text" id="studentClass" placeholder="班級（選填）">
                 
                 <button class="btn-primary" onclick="addStudent()">新增</button>
             </div>
